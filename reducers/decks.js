@@ -12,11 +12,13 @@ function decks (state = {}, action) {
         [action.deck.id]: action.deck
       }
     case DELETE_DECK:
-      let newState = {...state}
-      delete newState[action.deckId]
-      return newState
+      const {[action.deckId]: value, ...newState } = state
+      return {
+        ...newState
+      }
+      
     default:
-      return state;
+      return state
   }
 }
 

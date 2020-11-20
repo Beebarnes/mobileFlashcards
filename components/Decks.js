@@ -51,6 +51,7 @@ class Decks extends Component {
         <FlatList
           data={[decks]}
           renderItem={this.renderDeck}
+          keyExtractor={() => Math.floor(Math.random * 1000).toString()}
         />
       </View>
     )

@@ -9,44 +9,42 @@ export function generateId () {
   return string
 }
 
-export function clearLocalNotification() {
-  return AsyncStorage.removeItem(NOTIFICATION_KEY)
+export const clearLocalNotification = async () => {
+  try {
+    await AsyncStorage.removeItem(NOTIFICATION_KEY)
     .then(Notifications.cancelAllScheduledNotificationsAsync)
-}
-
-function createNotification() {
-  return {
-    title: 'Brain Time!',
-    body: "Time to quiz yourself."
+  } catch (error) {
+    console.log(error)
   }
 }
 
-export function setLocalNotification () {
-  AsyncStorage.getItem(NOTIFICATION_KEY)
-    .then(JSON.parse)
-    .then((data) => {
-      if (data === null) {
-        Permissions.askAsync(Permissions.NOTIFICATIONS)
-          .then(({status}) => {
-            if (status === 'granted') {
-              Notifications.cancelAllScheduledNotificationsAsync()
+export const setLocalNotification = async () => {
+  try {
+    const results = await AsyncStorage.getItem(NOTIFICATION_KEY)
+    const data = JSON.parse(results)
+    console.log('setLocalData', data)
+    if (data === null) {
+      console.log('Ask Permissions')
+      const {status} = await Notifications.getPermissionsAsync();
+      console.log(status)
+      if (status === 'granted') {
+        Notifications.cancelAllScheduledNotificationsAsync()
 
-              let tomorrow = new Date()
-              tomorrow.setDate(tomorrow.getDate() +1)
-              tomorrow.setHours(20)
-              tomorrow.setMinutes(0)
-
-              Notifications.scheduleNotificationAsync(
-                createNotification(),
-                {
-                  time: tomorrow,
-                  repeat: 'day',
-                }
-              )
-
-              AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
-            }
-          })
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Notifications Sent',
+            body: "Quiz yourself and keep"
+          },
+          trigger: {
+            hour: 20,
+            minute: 0,
+            repeats: true
+          }
+        }).then((string ) => console.log('scheduleNotificationsAsync', string))
+        AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
       }
-    })
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }

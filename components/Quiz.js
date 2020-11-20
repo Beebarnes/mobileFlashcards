@@ -24,7 +24,7 @@ class Quiz extends Component {
         return {
           firstOfDay: false,
         }
-      })
+      })    
     } 
     if (answer === 'correct') { 
       this.state.flipValue.setValue(0)      
@@ -36,6 +36,7 @@ class Quiz extends Component {
         }
       })
     } else {
+      this.state.flipValue.setValue(0)
       this.setState( (state) => {
         return {
           currentQuestion: state.currentQuestion + 1,
@@ -80,9 +81,9 @@ class Quiz extends Component {
   }
     
   render() {
-    const { currentQuestion, showQuestion } = this.state
+    const { currentQuestion, showQuestion, firstOfDay } = this.state
     const { questionsArray } = this.props
-
+    console.log('render', firstOfDay)
     const frontInterpolate = this.state.flipValue.interpolate({
       inputRange: [0, 180],
       outputRange: ['0deg', '180deg']
@@ -126,6 +127,9 @@ class Quiz extends Component {
           </View>
           :
           <View style={styles.container}>
+            <View style={styles.superscriptContainer}>
+              <Text style={styles.superscript}>{currentQuestion}/{questionsArray.length}</Text>
+            </View>
             <View style={styles.cardContainer}>
               <Animated.Text style={[styles.cardText, frontAnimatedStyle, {opacity: frontOpacity}]}>{questionsArray[currentQuestion].questionText}</Animated.Text>
               <Animated.Text style={[styles.cardText, styles.cardTextBack, backAnimatedStyle, {opacity: backOpacity}]}>{questionsArray[currentQuestion].answer}</Animated.Text>   
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },  
   text : {
     fontSize: 30,
@@ -190,6 +194,14 @@ const styles = StyleSheet.create({
   },
   white : {
     color: '#eee'
+  },
+  superscriptContainer : {
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end'
+  },
+  superscript : {
+    fontSize: 12
   }
 })
 

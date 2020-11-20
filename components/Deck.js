@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Easing, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import TextButton from './TextButton'
 import { deleteDeck } from '../utils/API'
@@ -36,6 +36,9 @@ class Deck extends Component {
       
     return (
       <View>
+        {deck &&
+        <Text style={{fontSize: 40, textAlign: 'center', padding: 20, textDecorationLine: 'underline'}}>{deck.title}</Text>
+        }
         <TextButton onPress={() => this.addQuestion(deck.id)}>Add Question</TextButton>
         {(deck && deck.questionTotal) > 0 &&
           <TextButton onPress={() => this.startQuiz(deck.id)}>
